@@ -11,12 +11,7 @@ class HomeScreen extends Component {
   };
 
   componentDidMount() {
-    axios({
-      method: 'get',
-      url: GlobalVars.api_url + '/data/days/all/',
-    }).then(response => {
-      console.log(response.data);
-    })
+    console.log('Hello');
   }
 
   render() {
