@@ -5,7 +5,7 @@ const Line = (props) => {
   return (
     <Image
       style={[{ width: '90%', marginTop: 25 }, props.style]}
-      source={require('../../../assets/icons/images/line.png')}
+      source={require('../../../assets/images/line.png')}
     />
   );
 };

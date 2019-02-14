@@ -9,6 +9,10 @@ import SettingsScreen from '../screens/SettingsScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
+}, {
+  navigationOptions: {
+    headerTitle: ''
+  }
 });
 
 HomeStack.navigationOptions = {
@@ -27,6 +31,10 @@ HomeStack.navigationOptions = {
 
 const PoolStack = createStackNavigator({
   Pool: PoolScreen,
+}, {
+  navigationOptions: {
+    headerTitle: ''
+  }
 });
 
 PoolStack.navigationOptions = {
@@ -41,6 +49,10 @@ PoolStack.navigationOptions = {
 
 const SettingsStack = createStackNavigator({
   Settings: SettingsScreen,
+}, {
+  navigationOptions: {
+    headerTitle: 'Settings'
+  }
 });
 
 SettingsStack.navigationOptions = {
@@ -61,6 +73,6 @@ const MainTabNavigator = createBottomTabNavigator({
     //activeTintColor: 'green',
     inactiveTintColor: 'gray',
   }
-})
+});
 
 export default MainTabNavigator;

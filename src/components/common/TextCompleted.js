@@ -1,18 +1,21 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text } from 'react-native';
 import GlobalStyles from '../../GlobalStyles';
 
 const TextCompleted = (props) => {
   return (
     <View style={[styles.container, props.style]}>
-      <Image
-        resizeMode='contain'
-        source={require('../../../assets/Icons/Common/checked_green.png')}
-        style={[styles.imageStyle, props.imageStyle]} />
+
       <Text style={[styles.textStyle, props.textStyle]}>{props.children}</Text>
     </View>
   );
 };
+/*
+<Image
+  resizeMode='contain'
+  source={require('../../../assets/Icons/Common/checked_green.png')}
+  style={[styles.imageStyle, props.imageStyle]} />
+*/
 
 const styles = {
   container: {
