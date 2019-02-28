@@ -40,6 +40,7 @@ const styles = {
     //flex: 1,
     flexDirection: 'row',
     backgroundColor: '#f7f5f5',
+    //backgroundColor: 'white',
     width: '90%',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,

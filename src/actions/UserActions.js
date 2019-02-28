@@ -28,6 +28,7 @@ export const userFetch = (token) => {
   };
 };
 
+
 export const setUserField = ({ prop, value }) => {
   return {
     type: USER_SET_FIELD,

@@ -12,11 +12,13 @@ class ImageButton extends Component {
   }
   render() {
     return (
-      <TouchableOpacity onPress={this.props.onPress} style={[styles.container, this.props.style]}>
-        <View styles={styles.imageContainer}>
-          <Image resizeMode='contain' source={this.props.image} style={[styles.imageStyle, this.props.imageStyle]} />
+      <TouchableOpacity onPress={this.props.onPress}>
+        <View style={[styles.container, this.props.style]}>
+          <View styles={styles.imageContainer}>
+            <Image resizeMode='contain' source={this.props.image} style={[styles.imageStyle, this.props.imageStyle]} />
+          </View>
+          {this.renderText()}
         </View>
-        {this.renderText()}
       </TouchableOpacity>
     );
   }
@@ -26,11 +28,14 @@ const styles = {
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 2,
+    padding: 10,
+    borderRadius: 2,
     flexDirection: 'row',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
     elevation: 2,
+    backgroundColor: 'white',
+
   },
   imageContainer: {
     padding: 5,

@@ -1,9 +1,15 @@
-import { USER_LOGIN_SUCCESS, USER_SET_FIELD, USER_LOGOUT, USER_LOGIN } from '../actions/types';
+import {
+  USER_LOGIN_SUCCESS,
+  USER_SET_FIELD,
+  USER_LOGOUT,
+  USER_LOGIN
+} from '../actions/types';
 
 const INITIAL_STATE = {
   user: null,
   loading: false,
-  auth_token: null
+  auth_token: null,
+  loading_logout: false
 };
 
 export default (state = INITIAL_STATE, action) => {

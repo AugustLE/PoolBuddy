@@ -6,6 +6,6 @@ const BasicStyles = {
     justifyContent: 'center',
     alignItems: 'center'
   },
-}
+};
 
 export default BasicStyles;

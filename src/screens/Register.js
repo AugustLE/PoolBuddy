@@ -13,6 +13,7 @@ const initial_state = {
   email: '',
   full_name: '',
   pool_size: '',
+  device_id: '',
   password: '',
   password_repeat: '',
   render_errors: false,
@@ -43,6 +44,7 @@ class Register extends Component {
           email: this.state.email,
           full_name: this.state.full_name,
           pool_size: this.state.pool_size,
+          device_id: this.state.device_id,
           password: this.state.password,
         }
 
@@ -70,8 +72,8 @@ class Register extends Component {
   }
 
   clear_of_errors() {
-    const { email, full_name, pool_size, password, password_repeat } = this.state;
-    if (!this.fc(email) || !this.fc(full_name) || pool_size <= 0.0) {
+    const { email, full_name, pool_size, device_id, password, password_repeat } = this.state;
+    if (!this.fc(email) || !this.fc(full_name) || pool_size <= 0.0 || !this.fc(device_id)) {
       return false;
     }
     if (password !== password_repeat || password.length < 8) {
@@ -166,6 +168,11 @@ class Register extends Component {
               value={this.state.pool_size}
               keyboardType='decimal-pad'
               maxLength={8}
+            />
+            <Input
+              placeholder={'Your device ID'}
+              onChangeText={(text) => this.setState({ device_id: text })}
+              value={this.state.device_id}
             />
             {this.renderErrorFields()}
             <Input

@@ -5,22 +5,22 @@ import GlobalVars from '../GlobalVars';
 
 
 export default async function registerForPushNotificationsAsync(user_token) {
-  console.log('Stage 0');
+  
   const { status: existingStatus } = await Permissions.getAsync(
     Permissions.NOTIFICATIONS
   );
-  console.log('Stage 1');
+
   let finalStatus = existingStatus;
   if (existingStatus !== 'granted') {
     const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
     finalStatus = status;
   }
-  console.log('Stage 2');
+
   // Stop here if the user did not grant permissions
   if (finalStatus !== 'granted') {
     return;
   }
-  console.log('Stage 3');
+
 
   // Get the token that uniquely identifies this device
   let push_token = await Notifications.getExpoPushTokenAsync();
