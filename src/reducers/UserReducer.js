@@ -2,7 +2,9 @@ import {
   USER_LOGIN_SUCCESS,
   USER_SET_FIELD,
   USER_LOGOUT,
-  USER_LOGIN
+  USER_LOGIN,
+  USER_FETCH,
+  PICK_CITY
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -18,8 +20,12 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, user: action.payload, loading: false };
     case USER_SET_FIELD:
       return { ...state, [action.payload.prop]: action.payload.value };
+    case USER_FETCH:
+      return { ...state, user: action.payload };
     case USER_LOGIN:
       return { ...state, auth_token: action.payload };
+    case PICK_CITY:
+      return { ...state, user: action.payload, loading: false };
     case USER_LOGOUT:
       return INITIAL_STATE;
     default:

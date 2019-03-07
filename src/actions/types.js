@@ -4,3 +4,6 @@ export const USER_LOGOUT = 'user_logout';
 export const USER_FETCH = 'user_fetch';
 export const USER_LOGIN = 'user_login';
 export const USER_FETCH_START = 'user_fetch_start';
+
+export const PICK_CITY = 'pick_city';
+export const CLIENT_SET_FIELD = 'client_set_field';

@@ -15,6 +15,8 @@ const Input = (props) => {
         multiline={props.multiline}
         keyboardType={props.keyboardType}
         maxLength={props.maxLength}
+        returnKeyType={props.returnKeyType}
+        onSubmitEditing={props.onSubmitEditing}
       />
     </View>
   );

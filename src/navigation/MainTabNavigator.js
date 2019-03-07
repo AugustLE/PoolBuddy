@@ -6,12 +6,17 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import PoolScreen from '../screens/PoolScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import GlobalStyles from '../GlobalStyles';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
 }, {
   navigationOptions: {
-    headerTitle: ''
+    headerTitle: 'Profile',
+    headerStyle: {
+      backgroundColor: GlobalStyles.themeColor
+    },
+    headerTintColor: 'white'
   }
 });
 
