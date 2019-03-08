@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, FlatList, Image } from 'react-native';
+import { Text, View, FlatList, Image, LayoutAnimation } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import axios from 'axios';
 import { Notifications } from 'expo';
@@ -23,7 +23,13 @@ class HomeScreen extends Component {
     modal_visible: false,
     cities: [],
     city_search: '',
-    loading: false
+    loading: false,
+    edit_profile: false,
+    loading_area: false,
+    name_edit_text: '',
+    pool_edit_text: '',
+    device_edit_text: '',
+    loading_user: false,
   }
 
   componentDidMount() {
@@ -65,6 +71,7 @@ class HomeScreen extends Component {
   getCities() {
     const url = GlobalVars.api_url + '/client/getcities/';
     const access_token = 'Token ' + this.props.auth_token;
+    this.setState({ loading_area: true });
     axios({
       method: 'get',
       url: url,
@@ -75,9 +82,24 @@ class HomeScreen extends Component {
         city_search: this.state.city_search
       }
     }).then((response) => {
-      this.setState({ cities: response.data });
+      this.setState({ cities: response.data, loading_area: false });
     }).catch(() => {
-      console.log('ERROR');
+      this.setState({ loading_area: false });
+    });
+  }
+
+  unRegisterCity() {
+    const url = GlobalVars.api_url + '/client/unregcity/';
+    axios({
+      method: 'post',
+      url: url,
+      headers: {
+        Authorization: 'Token ' + this.props.auth_token
+      },
+    }).then((response) => {
+      this.props.setUserField({ prop: 'user', value: response.data });
+    }).catch(() => {
+      console.log('error');
     });
   }
 
@@ -85,14 +107,30 @@ class HomeScreen extends Component {
     this.props.pickCity(this.props.auth_token, item);
   }
 
+  saveChanges() {
+    const url = GlobalVars.api_url + '/user/edit/';
+    this.setState({ loading_user: true });
+    axios({
+      method: 'post',
+      url: url,
+      headers: {
+        Authorization: 'Token ' + this.props.auth_token
+      },
+      data: {
+        pool_size: this.state.pool_edit_text,
+        device_id: this.state.device_edit_text,
+        name: this.state.name_edit_text
+      }
+    }).then((response) => {
+      // set updated user
+      this.props.setUserField({ prop: 'user', value: response.data });
+      this.setState({ edit_profile: false, loading_user: false });
+    }).catch(() => {
+      console.log('Error yo');
+      this.setState({ loading_user: false });
+    });
+  }
 
-  /*
-  <CityListItem
-    key={item.pk}
-    onPress={this.onListItemPress.bind(this, item)}
-    item={item}
-    style={{ height: 40 }}
-  />*/
   renderItem(item) {
     return (
       <CityListItem
@@ -105,6 +143,12 @@ class HomeScreen extends Component {
   }
 
   renderCities() {
+    if (this.state.loading_area) {
+      return (
+        <Spinner text='Loading places...' />
+      );
+    }
+
     if (!this.props.loading) {
       if (this.props.user && !this.props.user.city) {
         return (
@@ -123,12 +167,13 @@ class HomeScreen extends Component {
               />
               <ImageButton
                 image={require('../../assets/icons/search.png')}
-                style={{ flex: 1, marginLeft: 6, height: 50 }}
+                style={{ flex: 1, marginLeft: 6, height: 40 }}
                 onPress={this.getCities.bind(this)}
                 >
                 Search
               </ImageButton>
             </View>
+            <Line />
             <FlatList
               data={this.state.cities}
               style={{ width: '100%' }}
@@ -163,7 +208,9 @@ class HomeScreen extends Component {
   }
 
   renderProfileDetails() {
-    if (this.props.user && this.props.user.city) {
+    LayoutAnimation.spring();
+    if (this.props.user && this.props.user.city && !this.state.edit_profile) {
+      console.log(this.props.user.device);
       return (
         <View style={styles.detailContainer}>
           <View style={styles.textDetailContainer}>
@@ -199,37 +246,124 @@ class HomeScreen extends Component {
               <Text style={[styles.textDetail, { marginLeft: 2 }]}>{this.props.user.device}</Text>
             </View>
           </View>
+          <Line />
         </View>
       );
     }
   }
 
-  /*
 
-  <PrimaryButton style={styles.buttonStyle} onPress={() => this.setState({ modal_visible: true })}>
-    Logout
-  </PrimaryButton>
-  */
+  renderEditView() {
+    if (this.state.loading_user) {
+      return (
+        <Spinner text='Loading user...' />
+      );
+    }
 
-  renderButtons() {
-    return (
-      <View style={styles.buttonContainer}>
+    if (this.state.edit_profile && this.props.user) {
+      return (
+        <View style={styles.detailContainer}>
+          <View style={[styles.onlyTextContainer, { width: '90%', marginTop: 20 }]}>
+            <Text style={[styles.textDetail, { fontWeight: '600', flex: 1 }]}>Full name: </Text>
+            <Input
+              placeholder={'Name...'}
+              onChangeText={(text) => this.setState({ name_edit_text: text })}
+              value={this.state.name_edit_text}
+              style={styles.editInput}
+              inputStyle={{ color: GlobalStyles.grayColor }}
+            />
+          </View>
+          <View style={[styles.onlyTextContainer, { width: '90%', marginTop: 20 }]}>
+            <Text style={[styles.textDetail, { fontWeight: '600', flex: 1 }]}>Pool Size: </Text>
+            <Input
+              placeholder={'Pool size'}
+              onChangeText={(text) => this.setState({ pool_edit_text: text })}
+              value={this.state.pool_edit_text}
+              style={styles.editInput}
+              inputStyle={{ color: GlobalStyles.grayColor }}
+            />
+          </View>
+          <View style={[styles.onlyTextContainer, { width: '90%', marginTop: 20 }]}>
+            <Text style={[styles.textDetail, { fontWeight: '600', flex: 1 }]}>Device ID: </Text>
+            <Input
+              placeholder={'Device ID'}
+              onChangeText={(text) => this.setState({ device_edit_text: text })}
+              value={this.state.device_edit_text}
+              style={styles.editInput}
+              inputStyle={{ color: GlobalStyles.grayColor }}
+            />
+          </View>
+          <Line />
+          <View style={[styles.buttonContainer, { marginTop: 20 }]}>
+            <ImageButton
+              image={require('../../assets/icons/save.png')}
+              style={{ flex: 1, marginLeft: 6, height: 40, width: 130 }}
+              onPress={this.saveChanges.bind(this)}
+              >
+              Save changes
+            </ImageButton>
+            <ImageButton
+              image={require('../../assets/icons/cancel.png')}
+              style={{ flex: 1, marginLeft: 6, height: 40, width: 90 }}
+              onPress={() => this.setState({ edit_profile: false })}
+              >
+              Cancel
+            </ImageButton>
+          </View>
+        </View>
+      );
+    }
+  }
+
+  renderChangeAreaButton() {
+    if (this.props.user && this.props.user.city) {
+      return (
         <ImageButton
-          image={require('../../assets/icons/logout.png')}
-          style={{ flex: 1, marginLeft: 6, height: 40, width: 90 }}
-          onPress={() => this.setState({ modal_visible: true })}
-          >
-          Logout
+          image={require('../../assets/icons/worldwide_black.png')}
+          style={{ flex: 1, marginLeft: 6, height: 40, width: 125, marginTop: 10 }}
+          onPress={this.unRegisterCity.bind(this)}>
+          Change area
         </ImageButton>
+      );
+    }
+  }
+
+  renderEditButton() {
+    if (this.props.user && this.props.user.city) {
+      return (
         <ImageButton
           image={require('../../assets/icons/edit.png')}
-          style={{ flex: 1, marginLeft: 6, height: 40, width: 90 }}
-          onPress={() => console.log('test')}
-          >
+          style={{ flex: 1, marginLeft: 6, height: 40, width: 90, marginTop: 10 }}
+          onPress={() => {
+            this.setState({
+              edit_profile: true,
+              pool_edit_text: this.props.user.pool_size,
+              device_edit_text: this.props.user.device,
+              name_edit_text: this.props.user.full_name
+            });
+          }}>
           Edit
         </ImageButton>
-      </View>
-    );
+      );
+    }
+  }
+
+  renderButtons() {
+    if (!this.state.edit_profile) {
+      return (
+        <View style={styles.buttonContainer}>
+          <ImageButton
+            image={require('../../assets/icons/logout.png')}
+            style={{ flex: 1, marginLeft: 6, height: 40, width: 90, marginTop: 10 }}
+            onPress={() => this.setState({ modal_visible: true })}
+            >
+            Logout
+          </ImageButton>
+          {this.renderEditButton()}
+          {this.renderChangeAreaButton()}
+        </View>
+      );
+    }
   }
 
   render() {
@@ -242,6 +376,7 @@ class HomeScreen extends Component {
             {this.renderProfileDetails()}
             {this.renderCities()}
             {this.renderButtons()}
+            {this.renderEditView()}
             <SimpleModal
                 visible={this.state.modal_visible}
                 onClose={() => this.setState({ modal_visible: false })}
@@ -287,7 +422,7 @@ const styles = {
     flexDirection: 'row',
     alignItems: 'center',
     width: '90%',
-    marginBottom: 20
+    marginBottom: 10
   },
   profileContainer: {
     flexDirection: 'row',
@@ -343,7 +478,14 @@ const styles = {
     flexDirection: 'row',
     width: '90%',
     justifyContent: 'center',
-    marginTop: 20
+    marginTop: 10,
+    flexWrap: 'wrap'
+  },
+  editInput: {
+    flex: 2,
+    height: 45,
+    marginTop: 0,
+    backgroundColor: 'white',
   }
 };
 
