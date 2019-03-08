@@ -5,7 +5,7 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import PoolScreen from '../screens/PoolScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+//import SettingsScreen from '../screens/SettingsScreen';
 import GlobalStyles from '../GlobalStyles';
 
 const HomeStack = createStackNavigator({
@@ -38,7 +38,11 @@ const PoolStack = createStackNavigator({
   Pool: PoolScreen,
 }, {
   navigationOptions: {
-    headerTitle: ''
+    headerTitle: 'Pool forecast',
+    headerStyle: {
+      backgroundColor: GlobalStyles.themeColor
+    },
+    headerTintColor: 'white'
   }
 });
 
@@ -52,7 +56,7 @@ PoolStack.navigationOptions = {
   ),
 };
 
-const SettingsStack = createStackNavigator({
+/*const SettingsStack = createStackNavigator({
   Settings: SettingsScreen,
 }, {
   navigationOptions: {
@@ -68,12 +72,12 @@ SettingsStack.navigationOptions = {
       name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
     />
   ),
-};
+};*/
 
 const MainTabNavigator = createBottomTabNavigator({
   Home: { screen: HomeStack },
   Pool: { screen: PoolStack },
-  Settings: { screen: SettingsStack },
+  //Settings: { screen: SettingsStack },
 }, { tabBarOptions: {
     //activeTintColor: 'green',
     inactiveTintColor: 'gray',

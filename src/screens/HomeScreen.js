@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 //import BasicStyles from '../commonStyles/BasicStyles';
 import GlobalVars from '../GlobalVars';
 import SimpleModal from '../components/SimpleModal';
-import { PrimaryButton, Input, ImageButton, Line, Spinner } from '../components/common';
+import { Input, ImageButton, Line, Spinner } from '../components/common';
 import { setAuthToken } from '../GlobalMethods';
 import { setUserField, userFetch, pickCity } from '../actions';
 import registerForPushNotificationsAsync from '../functions/RegisterForPush';
@@ -162,6 +162,76 @@ class HomeScreen extends Component {
     }
   }
 
+  renderProfileDetails() {
+    if (this.props.user && this.props.user.city) {
+      return (
+        <View style={styles.detailContainer}>
+          <View style={styles.textDetailContainer}>
+            <Image
+              resizeMode='contain'
+              style={styles.detailImage}
+              source={require('../../assets/icons/swimming_pool.png')}
+            />
+            <View style={styles.onlyTextContainer}>
+              <Text style={[styles.textDetail, { fontWeight: '600' }]}>Pool Size: </Text>
+              <Text style={[styles.textDetail, { marginLeft: 2 }]}>{this.props.user.pool_size} cubic metres</Text>
+            </View>
+          </View>
+          <View style={styles.textDetailContainer}>
+            <Image
+              resizeMode='contain'
+              style={styles.detailImage}
+              source={require('../../assets/icons/worldwide.png')}
+            />
+            <View style={styles.onlyTextContainer}>
+              <Text style={[styles.textDetail, { fontWeight: '600' }]}>City: </Text>
+              <Text style={[styles.textDetail, { marginLeft: 2 }]}>{this.props.user.city}</Text>
+            </View>
+          </View>
+          <View style={styles.textDetailContainer}>
+            <Image
+              resizeMode='contain'
+              style={styles.detailImage}
+              source={require('../../assets/icons/device.png')}
+            />
+            <View style={styles.onlyTextContainer}>
+              <Text style={[styles.textDetail, { fontWeight: '600' }]}>Device ID: </Text>
+              <Text style={[styles.textDetail, { marginLeft: 2 }]}>{this.props.user.device}</Text>
+            </View>
+          </View>
+        </View>
+      );
+    }
+  }
+
+  /*
+
+  <PrimaryButton style={styles.buttonStyle} onPress={() => this.setState({ modal_visible: true })}>
+    Logout
+  </PrimaryButton>
+  */
+
+  renderButtons() {
+    return (
+      <View style={styles.buttonContainer}>
+        <ImageButton
+          image={require('../../assets/icons/logout.png')}
+          style={{ flex: 1, marginLeft: 6, height: 40, width: 90 }}
+          onPress={() => this.setState({ modal_visible: true })}
+          >
+          Logout
+        </ImageButton>
+        <ImageButton
+          image={require('../../assets/icons/edit.png')}
+          style={{ flex: 1, marginLeft: 6, height: 40, width: 90 }}
+          onPress={() => console.log('test')}
+          >
+          Edit
+        </ImageButton>
+      </View>
+    );
+  }
+
   render() {
     return (
       <View style={{ flex: 1, backgroundColor: 'white', alignItems: 'center', width: '100%' }}>
@@ -169,10 +239,9 @@ class HomeScreen extends Component {
         <Line />
         <KeyboardAwareScrollView style={{ backgroundColor: 'white', width: '100%' }}>
           <View style={styles.container}>
+            {this.renderProfileDetails()}
             {this.renderCities()}
-            <PrimaryButton style={styles.buttonStyle} onPress={() => this.setState({ modal_visible: true })}>
-              Logout
-            </PrimaryButton>
+            {this.renderButtons()}
             <SimpleModal
                 visible={this.state.modal_visible}
                 onClose={() => this.setState({ modal_visible: false })}
@@ -230,18 +299,51 @@ const styles = {
     width: '100%'
   },
   imageStyle: {
-    width: 100
+    width: 100,
+    flex: 1
   },
   textContainer: {
     flexDirection: 'column',
-    marginLeft: 10,
-    height: 80
+    marginLeft: 20,
+    height: 80,
+    flex: 3
   },
   profileText: {
     fontFamily: GlobalStyles.fontFamily,
     //fontWeight: '600',
     color: GlobalStyles.grayColor,
     marginTop: 5
+  },
+  detailContainer: {
+    alignItems: 'center',
+    width: '100%',
+    marginTop: 10
+  },
+  textDetailContainer: {
+    flexDirection: 'row',
+    width: '90%',
+    marginTop: 15
+  },
+  onlyTextContainer: {
+    flexDirection: 'row',
+    flex: 5
+  },
+  textDetail: {
+    fontFamily: GlobalStyles.fontFamily,
+    fontSize: 16,
+    color: GlobalStyles.grayColor,
+    alignSelf: 'center',
+    marginLeft: 10
+  },
+  detailImage: {
+    height: 40,
+    flex: 1
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    width: '90%',
+    justifyContent: 'center',
+    marginTop: 20
   }
 };
 
