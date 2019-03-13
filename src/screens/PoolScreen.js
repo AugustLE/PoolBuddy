@@ -4,7 +4,7 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import GlobalStyles from '../GlobalStyles';
 import GlobalVars from '../GlobalVars';
-import { Line, PrimaryButton, Spinner } from '../components/common';
+import { Line, PrimaryButton, Spinner, ImageButton } from '../components/common';
 
 const day_titles = ['(Today)', '(Tomorrow)', '(In 2 days)', '(In 3 days)'];
 const day_titles_l = ['(Tomorrow)', '(In 2 days)', '(In 3 days)', '(In 4 days)', '(In 5 days)', '(In 6 days)', '(In 7 days)', '(In 8 days)', '(In 9 days)', '(In 10 days)'];
@@ -16,6 +16,7 @@ class PoolScreen extends Component {
     short_term_data: [],
     long_term_data: [],
     loading: false,
+    fahrenheit: true
   }
 
   componentDidMount() {
@@ -45,6 +46,9 @@ class PoolScreen extends Component {
   }
 
   convertToFahrenheit(temp_c) {
+    if (!this.state.fahrenheit) {
+      return temp_c;
+    }
     const new_temp = (temp_c * (9 / 5)) + 32;
     return new_temp;
   }
@@ -77,10 +81,14 @@ class PoolScreen extends Component {
 
   forecastText(time_title, temp) {
     const temp_f = Math.round(this.convertToFahrenheit(temp) * 10) / 10;
+    let sign = '°F';
+    if (!this.state.fahrenheit) {
+      sign = '°C';
+    }
     return (
       <View style={{ flexDirection: 'row' }}>
         <Text style={[styles.forecastTextStyle, { fontWeight: '600' }]}>{time_title}: </Text>
-        <Text style={styles.forecastTextStyle}>{temp_f} °F</Text>
+        <Text style={styles.forecastTextStyle}>{temp_f} {sign}</Text>
       </View>
     );
   }
@@ -171,6 +179,23 @@ class PoolScreen extends Component {
     );
   }
 
+  renderTempButton() {
+    let icon = require('../../assets/icons/thermometer_F.png');
+
+    if (!this.state.fahrenheit) {
+      icon = require('../../assets/icons/thermometer_C.png');
+    }
+    return (
+      <ImageButton
+        image={icon}
+        containerStyle={styles.tempButtonContainer}
+        style={styles.tempButton}
+        imageStyle={{ height: 30, width: 30 }}
+        onPress={() => this.setState({ fahrenheit: !this.state.fahrenheit })}
+        />
+    );
+  }
+
   render() {
     return (
       <View style={styles.mainContainer}>
@@ -181,6 +206,7 @@ class PoolScreen extends Component {
         {this.renderSegmentControl()}
         <Line />
         {this.renderContent()}
+        {this.renderTempButton()}
       </View>
     );
   }
@@ -275,6 +301,18 @@ const styles = {
     fontSize: 16,
     fontFamily: GlobalStyles.fontFamily,
     color: GlobalStyles.themeColor
+  },
+  tempButtonContainer: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    width: 50,
+    height: 50
+  },
+  tempButton: {
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.0,
+    elevation: 0,
   }
 };
 

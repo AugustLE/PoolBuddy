@@ -12,7 +12,7 @@ class ImageButton extends Component {
   }
   render() {
     return (
-      <TouchableOpacity onPress={this.props.onPress}>
+      <TouchableOpacity onPress={this.props.onPress} style={this.props.containerStyle}>
         <View style={[styles.container, this.props.style]}>
           <View styles={styles.imageContainer}>
             <Image resizeMode='contain' source={this.props.image} style={[styles.imageStyle, this.props.imageStyle]} />
