@@ -6,13 +6,16 @@ import GlobalStyles from '../GlobalStyles';
 import GlobalVars from '../GlobalVars';
 import { Line, PrimaryButton, Spinner } from '../components/common';
 
+const day_titles = ['(Today)', '(Tomorrow)', '(In 2 days)', '(In 3 days)'];
+const day_titles_l = ['(Tomorrow)', '(In 2 days)', '(In 3 days)', '(In 4 days)', '(In 5 days)', '(In 6 days)', '(In 7 days)', '(In 8 days)', '(In 9 days)', '(In 10 days)'];
+
 class PoolScreen extends Component {
 
   state = {
     short_term: true,
     short_term_data: [],
     long_term_data: [],
-    loading: false
+    loading: false,
   }
 
   componentDidMount() {
@@ -33,13 +36,17 @@ class PoolScreen extends Component {
       }
     }).then((response) => {
       this.setState({ loading: false });
-      console.log(response.data);
       if (short_term) {
         this.setState({ short_term_data: response.data });
       } else {
         this.setState({ long_term_data: response.data });
       }
     });
+  }
+
+  convertToFahrenheit(temp_c) {
+    const new_temp = (temp_c * (9 / 5)) + 32;
+    return new_temp;
   }
 
   renderSegmentControl() {
@@ -68,19 +75,20 @@ class PoolScreen extends Component {
     );
   }
 
-  forecastText(time_title, time) {
+  forecastText(time_title, temp) {
+    const temp_f = Math.round(this.convertToFahrenheit(temp) * 10) / 10;
     return (
       <View style={{ flexDirection: 'row' }}>
         <Text style={[styles.forecastTextStyle, { fontWeight: '600' }]}>{time_title}: </Text>
-        <Text style={styles.forecastTextStyle}>{time} °C</Text>
+        <Text style={styles.forecastTextStyle}>{temp_f} °F</Text>
       </View>
     );
   }
 
-  renderShortTermItem(item) {
+  renderShortTermItem(item, title) {
     return (
       <View key={item.pk} style={styles.forecastContainer}>
-        <Text style={styles.forecastTitle}>{item.date}</Text>
+        <Text style={styles.forecastTitle}>{item.date} {title}</Text>
         <View style={styles.forecastSubContainer}>
           <View style={styles.forecastTextContainer}>
             {this.forecastText('00 - 02', item.temp_0_to_2)}
@@ -103,10 +111,10 @@ class PoolScreen extends Component {
     );
   }
 
-  renderLongTermItem(item) {
+  renderLongTermItem(item, title) {
     return (
       <View key={item.pk} style={styles.forecastContainer}>
-        <Text style={styles.forecastTitle}>{item.date}</Text>
+        <Text style={styles.forecastTitle}>{item.date} {title}</Text>
         <View style={styles.forecastSubContainer}>
           <View style={styles.forecastTextContainer}>
             {this.forecastText('00 - 06', item.temp_0_to_6)}
@@ -122,19 +130,29 @@ class PoolScreen extends Component {
   }
 
   forecastList() {
+    let title_counter = 0;
+    let day_title = '';
     if (!this.state.short_term) {
       return (
         this.state.long_term_data.map(item => {
+          if (title_counter < day_titles_l.length) {
+            day_title = day_titles_l[title_counter];
+          }
+          title_counter++;
           return (
-            this.renderLongTermItem(item)
+            this.renderLongTermItem(item, day_title)
           );
         })
       );
     }
     return (
       this.state.short_term_data.map(item => {
+        if (title_counter < day_titles.length) {
+          day_title = day_titles[title_counter];
+        }
+        title_counter++;
         return (
-          this.renderShortTermItem(item)
+          this.renderShortTermItem(item, day_title)
         );
       })
     );

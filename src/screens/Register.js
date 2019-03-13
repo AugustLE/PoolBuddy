@@ -33,7 +33,7 @@ class Register extends Component {
   register() {
     const url = GlobalVars.api_url + '/user/register/';
     this.setState({ render_errors: true });
-
+    console.log('TEST');
     if (this.clear_of_errors()) {
       this.setState({ loading: true });
 
@@ -55,9 +55,11 @@ class Register extends Component {
           this.props.setUserField({ prop: 'auth_token', value: response.data.token });
           setAuthToken(response.data.token);
           this.props.navigation.navigate('App');
+          console.log('SUCCESS');
         } else {
           console.log(response.data.error);
           this.setState({ reg_error: response.data.error, loading: false });
+          console.log('ERROR');
         }
       });
       //
