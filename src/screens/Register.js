@@ -99,7 +99,7 @@ class Register extends Component {
     if (this.fc(email) && this.fc(full_name) && pool_size > 0.0) {
       return;
     }
-    return this.renderError('Alle felter må fylles ut. Telefonnr må bestå av 8 sifre');
+    return this.renderError('All fields must be completed');
   }
 
   renderErrorPassword() {
@@ -107,7 +107,7 @@ class Register extends Component {
     if (password.localeCompare(password_repeat) === 0 && password.length >= 8) {
       return;
     }
-    const error_string = 'Passordene må være like og bestå av 8 eller flere symboler';
+    const error_string = 'Passwords must match and contain at least 8 symbols';
     return this.renderError(error_string);
   }
 
